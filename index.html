@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Favorite Person ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff4d6d;
+            --soft-pink: #ff85a1;
+            --white: #ffffff;
+            --transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        #bg-hearts {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart-particle {
+            position: absolute;
+            bottom: -20px;
+            animation: floatUp 4s linear forwards;
+        }
+
+        @keyframes floatUp {
+            to { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        .card {
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 420px;
+            color: var(--white);
+        }
+
+        h1 { font-size: 2rem; margin-bottom: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        p { font-size: 1.1rem; margin-bottom: 40px; opacity: 0.9; }
+
+        .btn-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            min-height: 120px;
+            position: relative;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        #yesBtn {
+            background: var(--white);
+            color: var(--primary-pink);
+            z-index: 20;
+        }
+
+        #yesBtn:hover { transform: scale(1.1); box-shadow: 0 8px 25px rgba(255,255,255,0.4); }
+
+        #noBtn {
+            background: #333;
+            color: var(--white);
+            position: relative;
+            z-index: 19;
+        }
+
+        
+        #noBtn.surrendered {
+            background: var(--white) !important;
+            color: var(--primary-pink) !important;
+            transform: translate(0, 0) !important;
+            position: relative !important;
+        }
+
+        .hidden { display: none; }
+        .success-view h2 { font-size: 2.5rem; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="bg-hearts"></div>
+
+<main class="card">
+    <div id="ask-view">
+        <h1 id="main-title">Will you be my Valentine Mam Noor? ❤️</h1>
+        <p>Life is better with you by my side.</p>
+        
+        <div class="btn-wrapper">
+            <button id="yesBtn" class="btn">Yes, Forever! ✨</button>
+            <button id="noBtn" class="btn">No 🙈</button>
+        </div>
+    </div>
+
+    <div id="success-view" class="hidden">
+        <h2>Yay! 🥰</h2>
+        <p>You've made me the happiest person alive!<br>I love you! ❤️</p>
+    </div>
+</main>
+
+<script>
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const askView = document.getElementById('ask-view');
+    const successView = document.getElementById('success-view');
+    const heartBox = document.getElementById('bg-hearts');
+
+    let dodgeCount = 0;
+    const maxDodges = 4; 
+
+    function spawnHeart() {
+        const h = document.createElement('div');
+        h.className = 'heart-particle';
+        h.innerHTML = '❤️';
+        h.style.left = Math.random() * 100 + 'vw';
+        h.style.fontSize = (Math.random() * 15 + 15) + 'px';
+        h.style.animationDuration = (Math.random() * 2 + 3) + 's';
+        heartBox.appendChild(h);
+        setTimeout(() => h.remove(), 4000);
+    }
+    setInterval(spawnHeart, 300);
+
+    
+    function handleNoAction() {
+        if (dodgeCount < maxDodges) {
+            dodgeCount++;
+            const x = Math.random() * 200 - 100;
+            const y = Math.random() * 150 - 75;
+            noBtn.style.transform = `translate(${x}px, ${y}px)`;
+        } else {
+            
+            noBtn.innerText = "Actually, Yes! 😍";
+            noBtn.classList.add('surrendered');
+            noBtn.removeEventListener('mouseover', handleNoAction);
+        }
+    }
+
+    function handleSuccess() {
+        askView.classList.add('hidden');
+        successView.classList.remove('hidden');
+        
+        for(let i=0; i<30; i++) setTimeout(spawnHeart, i * 50);
+    }
+
+    noBtn.addEventListener('mouseover', handleNoAction);
+    noBtn.addEventListener('click', () => {
+        if (dodgeCount >= maxDodges) handleSuccess();
+        else handleNoAction();
+    });
+
+    yesBtn.addEventListener('click', handleSuccess);
+</script>
+
+</body>
+</html>
